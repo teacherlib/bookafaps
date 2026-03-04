@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบค้นหาหนังสือรุ่นนักเรียนเตรียมทหาร</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>ระบบค้นหาหนังสือรุ่นนักเรียนเตรียมทหาร (AFAPS)</h2>
+        
+        <div class="search-controls">
+            <select id="searchType">
+                <option value="internet">ค้นหาแบบอินเทอร์เน็ต (Internet)</option>
+                <option value="intranet">ค้นหาแบบอินทราเน็ต (Intranet)</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="พิมพ์เลขรุ่น เช่น 1, 2, 80">
+            <button id="searchBtn" class="btn" style="width: auto;">ค้นหา</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>นตท. รุ่นที่</th>
+                    <th>ดาวน์โหลดไฟล์ (PDF)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+    <script src="app.js"></script>
+    <script>
+        // เรียกข้อมูลทันทีเมื่อเปิดหน้า search
+        window.onload = fetchYearbooks;
+    </script>
+</body>
+</html>
