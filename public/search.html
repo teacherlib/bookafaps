@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบค้นหาหนังสือรุ่น - AFAPS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #F4F4F9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
+        h2 { color: #4B0082; text-align: center; border-bottom: 2px solid #4B0082; padding-bottom: 10px; margin-bottom: 20px; }
+        .search-controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        select, input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
+        .btn { background-color: #4B0082; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn:hover { background-color: #6A0DAD; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background-color: #4B0082; color: #fff; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .btn-download { background-color: #28a745; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 14px; }
+        .btn-download:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ระบบค้นหาหนังสือรุ่นนักเรียนเตรียมทหาร (AFAPS)</h2>
+        <div class="search-controls">
+            <select id="searchType">
+                <option value="internet">ค้นหาแบบอินเทอร์เน็ต</option>
+                <option value="intranet">ค้นหาแบบอินทราเน็ต</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="พิมพ์เลขรุ่น เช่น 1, 2, 80">
+            <button id="searchBtn" class="btn">ค้นหา</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>นตท. รุ่นที่</th>
+                    <th>ดาวน์โหลดไฟล์ (PDF)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        let allYearbooks = [];
+
+        window.onload = async () => {
+            try {
+                const res = await fetch('/api/yearbooks');
+                const data = await res.json();
+                if (data.success) {
+                    allYearbooks = data.data;
+                    renderTable(allYearbooks);
+                }
+            } catch (err) { console.error('Error:', err); }
+        };
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            data.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>นตท. รุ่นที่ ${item.class_number}</td>
+                        <td><a href="${item.pdf_url}" target="_blank" class="btn-download">Download</a></td>
+                    </tr>
+                `;
+            });
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) renderTable(allYearbooks);
+            else renderTable(allYearbooks.filter(i => i.class_number.toString() === query));
+        });
+    </script>
+</body>
+</html>
